@@ -1,0 +1,298 @@
+type Controller @entity {
+  "controller address"
+  id: ID!
+  governance: String!
+  store: String!
+  createAtBlock: BigInt!
+  timestamp: BigInt!
+}
+
+type Vault @entity {
+  "vault address"
+  id: ID!
+  name: String!
+  symbol: String!
+  decimal: BigInt!
+  createAtBlock: BigInt!
+  timestamp: BigInt!
+  strategy: Strategy
+  active: Boolean
+  pool: Pool
+  tvlSequenceId: Int!
+  underlying: Token!
+  tvl: BigDecimal!
+  priceUnderlying: BigDecimal!
+  apy: BigDecimal!
+  apyReward: BigDecimal!
+  apyAutoCompound: BigDecimal!
+  lastShareTimestamp: BigInt!
+  lastUsersShareTimestamp: BigInt!
+  lastSharePrice: BigInt!
+  users: [String!]!
+  skipFirstApyReward: Boolean
+}
+
+type VaultUtil @entity {
+  id: ID!
+  vaults: [Vault!]!
+  vaultLength: Int!
+  lastBlockPrice: BigInt!
+}
+
+type PriceHistory @entity {
+  id: ID!
+
+  price: BigDecimal!
+  vault: Vault!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type VaultHistory @entity {
+  "tx + vault address"
+  id: ID!
+  vault: Vault!
+
+  priceUnderlying: BigDecimal!
+  sharePrice: BigInt!
+  sharePriceDec: BigDecimal!
+  timestamp: BigInt!
+}
+
+type Strategy @entity {
+  "strategy address"
+  id: ID!
+  vault: Vault!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type LastHarvest @entity {
+  id: ID!
+  tx: String!
+  strategy: Strategy!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type SharePrice @entity {
+  "tx hash"
+  id: ID!
+  vault: Vault
+  strategy: Strategy
+  oldSharePrice: BigInt!
+  newSharePrice: BigInt!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type Tvl @entity {
+  "tx-vault"
+  id: ID!
+  vault: Vault
+  totalSupply: BigInt!
+  value: BigDecimal!
+  tvlSequenceId: Int!
+  priceUnderlying: BigDecimal!
+  sharePrice: BigInt!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+  sharePriceDivDecimal: BigDecimal!
+  decimal: BigDecimal!
+}
+
+type Pool @entity {
+  "pool address"
+  id: ID!
+  vault: Vault!
+  "pool type"
+  type: PoolType!
+  # lpToken: Token!
+  rewardTokens: [Token!]!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type Token @entity {
+  "token address"
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}
+
+type User @entity {
+  id: ID!
+}
+
+enum PoolType {
+  NoMintRewardPool
+  PotPool
+  ExclusiveRewardPool
+}
+
+type Reward @entity {
+  # transaction hash alone is not unique, we need to add pool address
+  "transactionhash-pooladdress-rewardtoken"
+  id: ID!
+  timestamp: BigInt!
+  pool: Pool!
+  "token that is rewarded"
+  token: Token!
+  "amount of reward added"
+  reward: BigInt!
+  tx: String!
+  "reward rate after reward was added - valid untill next reward or periodFinish"
+  rewardRate: BigInt!
+  "timestamp when the pool runs out of rewards if no new rewards are added"
+  periodFinish: BigInt!
+}
+
+type ApyReward @entity {
+  "transactionhash-vaultaddress"
+  id: ID!
+  vault: Vault!
+  apy: BigDecimal!
+  apr: BigDecimal!
+  prices: [BigDecimal!]!
+  periodFinishes: [BigInt!]!
+  rewardRates: [BigInt!]!
+  rewardForPeriods: [BigDecimal!]!
+  tvlUsd: BigDecimal!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type ApyAutoCompound @entity {
+  "transactionhash-vaultaddress"
+  id: ID!
+  vault: Vault!
+  apy: BigDecimal!
+  apr: BigDecimal!
+  diffSharePrice: BigDecimal!
+  diffTimestamp: BigDecimal!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type GeneralApy @entity {
+  "transactionhash-vaultaddress"
+  id: ID!
+  apy: BigDecimal!
+  apyAutoCompound: BigDecimal!
+  apyReward: BigDecimal!
+  vault: Vault!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type AutoStake @entity {
+  "farm pool address"
+  id: ID!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type UserBalance @entity {
+  "vault-user"
+  id: ID!
+  vault: Vault!
+  userAddress: String!
+  value: BigDecimal!
+  poolBalance: BigDecimal!
+  vaultBalance: BigDecimal!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type UserBalanceHistory @entity {
+  "tx-user"
+  id: ID!
+  userAddress: String!
+  transactionType: TransactionType!
+  vault: Vault!
+  "Amount balance in user address"
+  value: BigDecimal!
+  vaultBalance: BigDecimal!
+  poolBalance: BigDecimal!
+  priceUnderlying: BigDecimal!
+  sharePrice: BigInt!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type UserTransaction @entity {
+  "tx"
+  id: ID!
+  userAddress: String!
+  transactionType: TransactionType!
+  vault: Vault!
+  "Amount in transaction"
+  value: BigInt!
+  sharePrice: BigInt!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+enum TransactionType {
+  Deposit
+  Withdraw
+}
+
+type TotalTvl @entity{
+
+  id: ID!
+
+  value: BigDecimal!
+}
+
+type TotalTvlHistory @entity{
+
+  id: ID!
+
+  sequenceId: BigInt!
+  value: BigDecimal!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TotalTvlHistoryV2 @entity{
+
+  id: ID!
+
+  value: BigDecimal!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TotalTvlUtil @entity{
+# id is 1
+  id: ID!
+
+  vaults: [String!]!
+  lastTimestampUpdate: BigInt!
+
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TotalTvlCount @entity{
+  # id is 1
+  id: ID!
+
+  length: BigInt!
+}
+
+type PriceFeed @entity {
+  id: ID!
+  vault: Vault!
+  price: BigDecimal!
+  sharePrice: BigDecimal!
+  # price * sharePrice
+  value: BigDecimal!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}

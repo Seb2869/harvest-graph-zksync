@@ -1,0 +1,7 @@
+/node_modules/
+/generated/
+/build/
+/.idea/
+/tests/.bin/
+/graph-zksync.iml
+/yarn.lock

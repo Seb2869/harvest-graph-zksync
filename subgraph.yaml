@@ -1,0 +1,218 @@
+specVersion: 0.0.8
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Controller
+    network: zksync-era
+    source:
+      abi: ControllerContract
+      address: "0xC04b19b91EBe5DFBE285C89ACDdDBa0f7258c2Be"
+      startBlock: 31726279
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Vault
+        - Strategy
+      abis:
+        - name: ControllerContract
+          file: ./abis/harvest/Controller.json
+        - name: VaultContract
+          file: ./abis/VaultV2.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: WeightedPool2TokensContract
+          file: ./abis/balancer/WeightedPool2Tokens.json
+        - name: BalancerVaultContract
+          file: ./abis/balancer/BalancerVault.json
+        - name: PotPoolContract
+          file: ./abis/harvest/PotPool.json
+        - name: VaultV2Contract
+          file: ./abis/VaultV2.json
+        - name: StrategyBaseContract
+          file: ./abis/StrategyBase.json
+        - name: PancakeFactoryContract
+          file: ./abis/baseswap/PancakeFactory.json
+        - name: PancakePairContract
+          file: ./abis/baseswap/PancakePair.json
+        - name: AedromeFactoryContract
+          file: ./abis/aerodrome/AerodromeFactory.json
+        - name: AedromePoolContract
+          file: ./abis/aerodrome/AerodromePool.json
+        - name: CurveVaultContract
+          file: ./abis/curve/CurveVault.json
+        - name: CurveMinterContract
+          file: ./abis/curve/CurveMinter.json
+        - name: SwapSyncFactoryContract
+          file: ./abis/swapsync/SyncSwapFactory.json
+        - name: SwapSyncPoolContract
+          file: ./abis/swapsync/SyncSwapClassicPool.json
+        - name: VelocorePoolContract
+          file: ./abis/velocore/VelocorePool.json
+      eventHandlers:
+        - event: SharePriceChangeLog(indexed address,indexed
+            address,uint256,uint256,uint256)
+          handler: handleSharePriceChangeLog
+      blockHandlers:
+        - handler: handleBlock
+          filter:
+            kind: polling
+            every: 43440
+      file: ./src/ControllerListener.ts
+templates:
+  - kind: ethereum/contract
+    name: VaultListener
+    network: zksync-era
+    source:
+      abi: VaultContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Vault
+      abis:
+        - name: VaultContract
+          file: ./abis/VaultV2.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: WeightedPool2TokensContract
+          file: ./abis/balancer/WeightedPool2Tokens.json
+        - name: BalancerVaultContract
+          file: ./abis/balancer/BalancerVault.json
+        - name: PotPoolContract
+          file: ./abis/harvest/PotPool.json
+        - name: VaultV2Contract
+          file: ./abis/VaultV2.json
+        - name: StrategyBaseContract
+          file: ./abis/StrategyBase.json
+        - name: PancakeFactoryContract
+          file: ./abis/baseswap/PancakeFactory.json
+        - name: PancakePairContract
+          file: ./abis/baseswap/PancakePair.json
+        - name: AedromeFactoryContract
+          file: ./abis/aerodrome/AerodromeFactory.json
+        - name: AedromePoolContract
+          file: ./abis/aerodrome/AerodromePool.json
+        - name: CurveVaultContract
+          file: ./abis/curve/CurveVault.json
+        - name: CurveMinterContract
+          file: ./abis/curve/CurveMinter.json
+        - name: SwapSyncFactoryContract
+          file: ./abis/swapsync/SyncSwapFactory.json
+        - name: SwapSyncPoolContract
+          file: ./abis/swapsync/SyncSwapClassicPool.json
+        - name: VelocorePoolContract
+          file: ./abis/velocore/VelocorePool.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: Invest(uint256)
+          handler: handleInvest
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: handleApproval
+        - event: Deposit(indexed address,indexed address,uint256,uint256)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleWithdraw
+      file: ./src/VaultListener.ts
+  - kind: ethereum/contract
+    name: PotPoolListener
+    network: zksync-era
+    source:
+      abi: PotPoolContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Pool
+      abis:
+        - name: VaultContract
+          file: ./abis/VaultV2.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: WeightedPool2TokensContract
+          file: ./abis/balancer/WeightedPool2Tokens.json
+        - name: BalancerVaultContract
+          file: ./abis/balancer/BalancerVault.json
+        - name: PotPoolContract
+          file: ./abis/harvest/PotPool.json
+        - name: VaultV2Contract
+          file: ./abis/VaultV2.json
+        - name: StrategyBaseContract
+          file: ./abis/StrategyBase.json
+        - name: PancakeFactoryContract
+          file: ./abis/baseswap/PancakeFactory.json
+        - name: PancakePairContract
+          file: ./abis/baseswap/PancakePair.json
+        - name: AedromeFactoryContract
+          file: ./abis/aerodrome/AerodromeFactory.json
+        - name: AedromePoolContract
+          file: ./abis/aerodrome/AerodromePool.json
+        - name: CurveVaultContract
+          file: ./abis/curve/CurveVault.json
+        - name: CurveMinterContract
+          file: ./abis/curve/CurveMinter.json
+        - name: SwapSyncFactoryContract
+          file: ./abis/swapsync/SyncSwapFactory.json
+        - name: SwapSyncPoolContract
+          file: ./abis/swapsync/SyncSwapClassicPool.json
+        - name: VelocorePoolContract
+          file: ./abis/velocore/VelocorePool.json
+      eventHandlers:
+        - event: RewardAdded(address,uint256)
+          handler: handleRewardAdded
+        - event: RewardPaid(indexed address,address,uint256)
+          handler: handleRewardPaid
+      file: ./src/PotPoolListener.ts
+  - kind: ethereum/contract
+    name: StrategyListener
+    network: zksync-era
+    source:
+      abi: StrategyBaseContract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Strategy
+      abis:
+        - name: VaultContract
+          file: ./abis/VaultV2.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: WeightedPool2TokensContract
+          file: ./abis/balancer/WeightedPool2Tokens.json
+        - name: BalancerVaultContract
+          file: ./abis/balancer/BalancerVault.json
+        - name: PotPoolContract
+          file: ./abis/harvest/PotPool.json
+        - name: VaultV2Contract
+          file: ./abis/VaultV2.json
+        - name: StrategyBaseContract
+          file: ./abis/StrategyBase.json
+        - name: PancakeFactoryContract
+          file: ./abis/baseswap/PancakeFactory.json
+        - name: PancakePairContract
+          file: ./abis/baseswap/PancakePair.json
+        - name: AedromeFactoryContract
+          file: ./abis/aerodrome/AerodromeFactory.json
+        - name: AedromePoolContract
+          file: ./abis/aerodrome/AerodromePool.json
+        - name: CurveVaultContract
+          file: ./abis/curve/CurveVault.json
+        - name: CurveMinterContract
+          file: ./abis/curve/CurveMinter.json
+        - name: SwapSyncFactoryContract
+          file: ./abis/swapsync/SyncSwapFactory.json
+        - name: SwapSyncPoolContract
+          file: ./abis/swapsync/SyncSwapClassicPool.json
+        - name: VelocorePoolContract
+          file: ./abis/velocore/VelocorePool.json
+      eventHandlers:
+        - event: ProfitLogInReward(indexed address,uint256,uint256,uint256)
+          handler: handleProfitLogInReward
+      file: ./src/StrategyListener.ts

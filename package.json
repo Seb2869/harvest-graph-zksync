@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "test": "graph test",
-    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.0.22 l2-zksync-era"
+    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.1.0 l2-zksync-era"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.64.0",

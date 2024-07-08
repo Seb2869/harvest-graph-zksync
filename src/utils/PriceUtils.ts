@@ -36,8 +36,10 @@ import { SwapSyncPoolContract } from '../../generated/Controller/SwapSyncPoolCon
 import { VelocorePoolContract } from '../../generated/Controller/VelocorePoolContract';
 
 export function getPriceForCoin(address: Address): BigInt {
-
-  if (isBtc(address.toHexString())) {
+  if (isStableCoin(address.toHexString())) {
+    return BI_18;
+  }
+  if (isBtc(address)) {
     return getPriceForCoinWithSwapSync(address, USDC_ZK, SWAP_SYNC_FACTORY)
   }
   if (isWeth(address)) {
@@ -50,23 +52,7 @@ export function getPriceForCoin(address: Address): BigInt {
 
   const wethPrice = getPriceForCoinWithSwapSync(WETH_ZK, USDC_ZK, SWAP_SYNC_FACTORY)
 
-  return price.times(wethPrice);
-}
-
-function getPriceForAerodrome(tokenA: Address, tokenB: Address, factoryAddress: Address): BigInt {
-  const factory = AedromeFactoryContract.bind(factoryAddress);
-  const tryGetPool = factory.try_getPool1(tokenA, tokenB, false);
-  if (tryGetPool.reverted) {
-    return BigInt.zero();
-  }
-  const pool = AedromePoolContract.bind(tryGetPool.value);
-
-  const tryPrices = pool.try_prices(tokenB, BI_18, BigInt.fromString('1'));
-
-  if (tryPrices.reverted) {
-    return BigInt.zero();
-  }
-  return tryPrices.value[0];
+  return toBigInt(price.times(wethPrice).divDecimal(BD_18));
 }
 
 function getPriceForCoinWithSwapSync(address: Address, stableCoin: Address, factory: Address): BigInt {
@@ -97,10 +83,21 @@ function getPriceForCoinWithSwapSync(address: Address, stableCoin: Address, fact
   if (tryToken1.reverted) {
     return BigInt.zero();
   }
-  if (tryToken1.value.equals(stableCoin)) {
-    return reserves.get_reserve0().div(reserves.get_reserve1())
+
+  const decimal1 = fetchContractDecimal(address)
+  const decimal2 = fetchContractDecimal(stableCoin)
+
+
+  let delimiter = powBI(BI_TEN, decimal1.toI32() - decimal2.toI32() + DEFAULT_DECIMAL);
+
+  if (decimal1.le(decimal2)) {
+    delimiter = powBI(BI_TEN, decimal1.toI32() - decimal2.toI32() + DEFAULT_DECIMAL)
   }
-  return reserves.get_reserve1().div(reserves.get_reserve0())
+
+  if (tryToken1.value.equals(stableCoin)) {
+    return reserves.get_reserve1().times(delimiter).div(reserves.get_reserve0())
+  }
+  return reserves.get_reserve0().times(delimiter).div(reserves.get_reserve1())
 }
 
 function getPriceForCoinWithSwap(address: Address, stableCoin: Address, factory: Address): BigInt {
@@ -140,11 +137,11 @@ export function getPriceByVault(vault: Vault, block: ethereum.Block): BigDecimal
 
   const underlyingAddress = vault.underlying
 
-  // let price = getPriceForCoin(Address.fromString(underlyingAddress))
-  // if (!price.isZero()) {
-  //   createPriceFeed(vault, price.divDecimal(BD_18), block);
-  //   return price.divDecimal(BD_18)
-  // }
+  let price = getPriceForCoin(Address.fromString(underlyingAddress))
+  if (!price.isZero()) {
+    createPriceFeed(vault, price.divDecimal(BD_18), block);
+    return price.divDecimal(BD_18)
+  }
 
   const underlying = Token.load(underlyingAddress)
   if (underlying != null) {
@@ -196,6 +193,10 @@ export function getPriceLpUniPair(underlyingAddress: string): BigDecimal {
   const secondCoin = reserves.get_reserve1().toBigDecimal().times(positionFraction)
     .div(pow(BD_TEN, fetchContractDecimal(token1).toI32()))
 
+  // const firstCoin = reserves.get_reserve0().toBigDecimal().times(positionFraction)
+  //   .div(BD_18)
+  // const secondCoin = reserves.get_reserve1().toBigDecimal().times(positionFraction)
+  //   .div(BD_18)
 
   const token0Price = getPriceForCoin(token0)
   const token1Price = getPriceForCoin(token1)

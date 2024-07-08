@@ -5,11 +5,14 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "test": "graph test",
-    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.1.0 l2-zksync-era"
+    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.1.11 l2-zksync-era && npm run after-deploy",
+    "after-deploy": "./deploy.sh",
+    "deploy-studio-test": "graph codegen && graph build && graph deploy --studio -l v0.0.8 harvest-zksync-era"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.64.0",
     "@graphprotocol/graph-ts": "0.32.0",
-    "source-map-support": "^0.5.21"
+    "source-map-support": "^0.5.21",
+    "matchstick-as": "^0.5.0"
   }
 }

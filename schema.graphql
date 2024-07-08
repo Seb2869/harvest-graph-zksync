@@ -264,6 +264,7 @@ type TotalTvlHistoryV2 @entity{
   id: ID!
 
   value: BigDecimal!
+  sequenceId: BigInt!
 
   timestamp: BigInt!
   createAtBlock: BigInt!

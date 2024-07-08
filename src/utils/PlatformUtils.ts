@@ -75,9 +75,9 @@ export function isWeth(address: Address): boolean {
   return false;
 }
 
-export function isBtc(address: string): boolean {
+export function isBtc(address: Address): boolean {
   for (let i=0; i<BTC_ZK.length; i++) {
-    if (address.toLowerCase() == BTC_ZK[i]) {
+    if (address.equals(BTC_ZK[i])) {
       return true
     }
   }

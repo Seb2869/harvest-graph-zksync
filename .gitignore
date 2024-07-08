@@ -5,3 +5,5 @@
 /tests/.bin/
 /graph-zksync.iml
 /yarn.lock
+/tests/.latest.json
+.env

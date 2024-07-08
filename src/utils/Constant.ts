@@ -131,7 +131,7 @@ export const PS_ADDRESSES_MATIC = [
 ]
 
 export const BTC_ZK = [
-  '0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'.toLowerCase()
+  Address.fromString('0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'.toLowerCase())
 ]
 
 export const VELOCORE_NAME = 'Velocore';

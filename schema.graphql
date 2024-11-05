@@ -331,3 +331,20 @@ type PriceFeed @entity {
   timestamp: BigInt!
   createAtBlock: BigInt!
 }
+
+type RewardPaidEntity @entity(immutable: true) {
+  id: Bytes!
+  userAddress: String!
+  pool: Pool!
+  value: BigInt!
+  price: BigDecimal!
+  token: Token!
+  timestamp: BigInt!
+  createAtBlock: BigInt!
+}
+
+type TokenPrice @entity {
+  id: ID!
+  price: BigDecimal!
+  timestamp: BigInt!
+}

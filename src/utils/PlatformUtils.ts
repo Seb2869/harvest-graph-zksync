@@ -1,9 +1,15 @@
 import {
   BTC_ZK,
-  BALANCER_CONTRACT_NAME, CAMELOT_CONTRACT,
+  BALANCER_CONTRACT_NAME,
+  CAMELOT_CONTRACT,
   CURVE_CONTRACT_NAME,
   F_UNI_V3_CONTRACT_NAME,
-  LP_UNI_PAIR_CONTRACT_NAME, MESH_SWAP_CONTRACT, POISON_FINANCE_CONTRACT, VELOCORE_NAME, WETH_LIST_ZK,
+  LP_UNI_PAIR_CONTRACT_NAME,
+  MESH_SWAP_CONTRACT,
+  POISON_FINANCE_CONTRACT,
+  VELOCORE_NAME,
+  WETH_LIST_ZK,
+  SYNC_SWAP_CONTRACT_NAME,
 } from './Constant';
 import { WeightedPool2TokensContract } from '../../generated/Controller/WeightedPool2TokensContract';
 import { Address } from '@graphprotocol/graph-ts';
@@ -34,6 +40,16 @@ export function isCurve(name: string): boolean {
   }
   return false
 }
+
+export function isSyncSwap(name: string): boolean {
+  for (let i=0;i<SYNC_SWAP_CONTRACT_NAME.length;i++) {
+    if (name.toLowerCase().startsWith(SYNC_SWAP_CONTRACT_NAME[i])) {
+      return true
+    }
+  }
+  return false
+}
+
 
 export function isUniswapV3(name: string): boolean {
   if (name.toLowerCase().startsWith(F_UNI_V3_CONTRACT_NAME)) {

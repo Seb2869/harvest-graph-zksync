@@ -22,7 +22,7 @@ import { pow, powBI } from "./MathUtils";
 import {
   checkBalancer,
   isBalancer, isBtc, isCurve,
-  isLpUniPair, isVelcore, isWeth,
+  isLpUniPair, isSyncSwap, isVelcore, isWeth,
 } from './PlatformUtils';
 import { PancakeFactoryContract } from '../../generated/Controller/PancakeFactoryContract';
 import { PancakePairContract } from '../../generated/Controller/PancakePairContract';
@@ -163,6 +163,12 @@ export function getPriceByVault(vault: Vault, block: ethereum.Block): BigDecimal
       return tempPrice
     }
 
+    if (isSyncSwap(underlying.name)) {
+      const tempPrice = getPriceForSyncSwap(underlying.id);
+      createPriceFeed(vault, tempPrice, block);
+      return tempPrice
+    }
+
     if (isCurve(underlying.name)) {
       const tempPrice = getPriceForCurve(underlying.id)
       createPriceFeed(vault, tempPrice, block);
@@ -263,6 +269,56 @@ export function getValocorePrice(underlyingAddress: string): BigDecimal {
 
 
   return value.div(totalSupply);
+}
+
+export function getPriceForSyncSwap(underlying: string): BigDecimal {
+  const pool = SwapSyncPoolContract.bind(Address.fromString(underlying));
+  const tryToken0 = pool.try_token0();
+  const tryToken1 = pool.try_token1();
+  if (tryToken0.reverted || tryToken1.reverted) {
+    return BigDecimal.zero();
+  }
+  const token0 = tryToken0.value;
+  const token1 = tryToken1.value;
+
+  const token0Price = getPriceForCoin(token0);
+  const token1Price = getPriceForCoin(token1);
+
+  if (token0Price.isZero()) {
+    log.log(log.Level.WARNING, `Can not get price for token0 = ${token0.toHex()} , underlying = ${underlying}`);
+    return BigDecimal.zero();
+  }
+
+  if (token1Price.isZero()) {
+    log.log(log.Level.WARNING, `Can not get price for token1 = ${token1.toHex()} , underlying = ${underlying}`);
+    return BigDecimal.zero();
+  }
+
+  const decimals0 = fetchContractDecimal(token0).toI32();
+  const decimals1 = fetchContractDecimal(token1).toI32();
+
+  const tryReserves = pool.try_getReserves();
+  if (tryReserves.reverted) {
+    log.log(log.Level.WARNING, `Can not get reserves for underlying = ${underlying}`);
+    return BigDecimal.zero();
+  }
+
+  const reserves = tryReserves.value;
+
+  const tryTotalSupply = pool.try_totalSupply();
+  if (tryTotalSupply.reverted) {
+    log.log(log.Level.WARNING, `Can not get totalSupply for underlying = ${underlying}`);
+    return BigDecimal.zero();
+  }
+
+  const totalSupply = tryTotalSupply.value.toBigDecimal();
+
+  const token0Amount = reserves.get_reserve0().toBigDecimal().div(pow(BD_TEN, decimals0));
+  const token1Amount = reserves.get_reserve1().toBigDecimal().div(pow(BD_TEN, decimals1));
+
+  const totalValue = token0Amount.times(token0Price.divDecimal(pow(BD_TEN, decimals0))).plus(token1Amount.times(token1Price.divDecimal(pow(BD_TEN, decimals1))));
+
+  return totalValue.div(totalSupply);
 }
 
 export function getPriceForBalancer(underlying: string): BigDecimal {

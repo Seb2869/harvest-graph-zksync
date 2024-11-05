@@ -163,6 +163,10 @@ export const CURVE_CONTRACT_NAME = [
   'tricrypto'.toLowerCase()
 ]
 
+export const SYNC_SWAP_CONTRACT_NAME = [
+  'SyncSwap'.toLowerCase(),
+]
+
 export const F_UNI_V3_CONTRACT_NAME = 'fUniV3'.toLowerCase()
 export const MESH_SWAP_CONTRACT = 'Meshswap'.toLowerCase()
 export const POISON_FINANCE_CONTRACT = 'Poison.Finance Poison Ivy'.toLowerCase();

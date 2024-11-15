@@ -37,9 +37,9 @@ export function handleSharePriceChangeLog(event: SharePriceChangeLog): void {
 
   if (vault != null) {
     const lastSharePrice = vault.lastSharePrice
-    if (lastSharePrice != sharePrice.newSharePrice || vault.lastShareTimestamp.isZero()) {
+    if (vault.lastShareTimestamp.isZero()) {
       const lastShareTimestamp = vault.lastShareTimestamp
-      const diffSharePrice = sharePrice.newSharePrice.minus(sharePrice.oldSharePrice).divDecimal(pow(BD_TEN, vault.decimal.toI32()))
+      const diffSharePrice = sharePrice.newSharePrice.minus(lastSharePrice).divDecimal(pow(BD_TEN, vault.decimal.toI32()))
       const diffTimestamp = timestamp.minus(lastShareTimestamp)
       calculateAndSaveApyAutoCompound(`${event.transaction.hash.toHex()}-${vaultAddress}`, diffSharePrice, diffTimestamp, vault, event.block)
 

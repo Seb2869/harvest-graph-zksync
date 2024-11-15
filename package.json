@@ -5,7 +5,7 @@
     "codegen": "graph codegen",
     "build": "graph build",
     "test": "graph test",
-    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.0.2 harvest-zksync && npm run after-deploy",
+    "deploy-studio": "graph codegen && graph build && graph deploy --studio -l v0.0.3 harvest-zksync && npm run after-deploy",
     "deploy-studio-old": "graph codegen && graph build && graph deploy --studio -l v0.1.13 l2-zksync-era",
     "after-deploy": "./deploy.sh",
     "deploy-studio-test": "graph codegen && graph build && graph deploy --studio -l v0.0.8 harvest-zksync-era"

@@ -296,6 +296,7 @@ export function getPriceForSyncSwap(underlying: string): BigDecimal {
 
   const decimals0 = fetchContractDecimal(token0).toI32();
   const decimals1 = fetchContractDecimal(token1).toI32();
+  const decimals = fetchContractDecimal(Address.fromString(underlying)).toI32();
 
   const tryReserves = pool.try_getReserves();
   if (tryReserves.reverted) {
@@ -311,7 +312,7 @@ export function getPriceForSyncSwap(underlying: string): BigDecimal {
     return BigDecimal.zero();
   }
 
-  const totalSupply = tryTotalSupply.value.toBigDecimal();
+  const totalSupply = tryTotalSupply.value.toBigDecimal().div(pow(BD_TEN, decimals));
 
   const token0Amount = reserves.get_reserve0().toBigDecimal().div(pow(BD_TEN, decimals0));
   const token1Amount = reserves.get_reserve1().toBigDecimal().div(pow(BD_TEN, decimals1));

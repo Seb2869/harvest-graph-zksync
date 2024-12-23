@@ -116,7 +116,8 @@ export const STABLE_COIN_ARRAY_BASE = [
 export const STABLE_COIN_ARRAY_ZK = [
   USDC_ZK.toHexString().toLowerCase(),
   '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C'.toLowerCase(),
-  '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4'.toLowerCase()
+  '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4'.toLowerCase(),
+  '0x0e595bfcafb552f83e25d24e8a383f88c1ab48a4'.toLowerCase(),
 ]
 export const PS_ADDRESSES_MAINNET = [
   '0xd3093e3efbe00f010e8f5efe3f1cb5d9b7fe0eb1'.toLowerCase(),

@@ -1,7 +1,7 @@
 import { Address, BigDecimal, ethereum } from "@graphprotocol/graph-ts";
 import { TotalTvl, TotalTvlHistory, TotalTvlHistoryV2, Tvl, Vault } from '../../generated/schema';
 import { fetchContractTotalSupply } from "../utils/ERC20Utils";
-import { BD_TEN, BD_ZERO, getFromTotalAssets } from "../utils/Constant";
+import { BD_TEN, BD_ZERO, getFromTotalAssets, MAX_TVL } from '../utils/Constant';
 import { pow } from "../utils/MathUtils";
 import { fetchContractTotalAssets, fetchPricePerFullShare } from "../utils/VaultUtils";
 import { getPriceByVault } from "../utils/PriceUtils";
@@ -60,6 +60,9 @@ export function createTvl(address: Address, block: ethereum.Block): Tvl | null {
 }
 
 export function createTotalTvl(oldValue:BigDecimal, newValue: BigDecimal, id: string, block: ethereum.Block): void {
+  if (newValue.gt(MAX_TVL)) {
+    return;
+  }
   const defaultId = '1';
   let totalTvl = TotalTvl.load(defaultId)
   if (totalTvl == null) {

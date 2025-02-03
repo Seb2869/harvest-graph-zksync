@@ -4,6 +4,7 @@ import { pow } from "./MathUtils";
 export const UNKNOWN = 'unknown';
 
 export const TWO_WEEKS_IN_SECONDS = BigInt.fromString('1209600');
+export const MAX_TVL = BigDecimal.fromString('100000000')
 
 export const UNISWAP_V3_VALUE = pow(pow(BigDecimal.fromString('2'), 96), 2)
 export const SECONDS_OF_YEAR = BigDecimal.fromString('31557600');
@@ -118,6 +119,8 @@ export const STABLE_COIN_ARRAY_ZK = [
   '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C'.toLowerCase(),
   '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4'.toLowerCase(),
   '0x0e595bfcafb552f83e25d24e8a383f88c1ab48a4'.toLowerCase(),
+  '0x0259d9dfb638775858b1d072222237e2ce7111c0'.toLowerCase(),
+  '0xa93472c1b88243793e145b237b7172f1ee547836'.toLowerCase()
 ]
 export const PS_ADDRESSES_MAINNET = [
   '0xd3093e3efbe00f010e8f5efe3f1cb5d9b7fe0eb1'.toLowerCase(),

@@ -30,6 +30,7 @@ export const MODULE_RESULT = 75600;
 export const MODULE_RESULT_V2 = 518400;
 export const CONST_ID = '1';
 
+export const WBTC_ZK = Address.fromString('0xBBeB516fb02a01611cBBE0453Fe3c580D7281011');
 export const WETH_ZK = Address.fromString('0x5aea5775959fbc2557cc8789bc1bf90a239d9a91');
 export const USDC_ZK = Address.fromString('0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4');
 

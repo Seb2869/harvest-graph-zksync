@@ -33,6 +33,8 @@ export const CONST_ID = '1';
 export const WBTC_ZK = Address.fromString('0xBBeB516fb02a01611cBBE0453Fe3c580D7281011');
 export const WETH_ZK = Address.fromString('0x5aea5775959fbc2557cc8789bc1bf90a239d9a91');
 export const USDC_ZK = Address.fromString('0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4');
+export const USDC_E_ZK = Address.fromString('0x1d17CBcF0D6D143135aE902365D2E5e2A16538D4');
+
 
 export const VELOCORE_FACTORY = Address.fromString('0xf55150000aac457eCC88b34dA9291e3F6E7DB165');
 
@@ -136,7 +138,8 @@ export const PS_ADDRESSES_MATIC = [
 ]
 
 export const BTC_ZK = [
-  Address.fromString('0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'.toLowerCase())
+  Address.fromString('0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'.toLowerCase()),
+  Address.fromString('0xe757355edba7ced7b8c0271bba4efda184ad75ab'.toLowerCase())
 ]
 
 export const VELOCORE_NAME = 'Velocore';

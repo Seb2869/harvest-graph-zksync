@@ -11,7 +11,7 @@ import {
   isPsAddress,
   isStableCoin, SWAP_SYNC_FACTORY,
   USDC_ZK,
-  USDC_DECIMAL, WETH_ZK, VELOCORE_FACTORY, WBTC_ZK, USDC_E_ZK,
+  USDC_DECIMAL, WETH_ZK, VELOCORE_FACTORY, WBTC_ZK, USDC_E_ZK, MBTC_ZK,
 } from './Constant';
 import { Token, Vault } from "../../generated/schema";
 import { WeightedPool2TokensContract } from "../../generated/templates/VaultListener/WeightedPool2TokensContract";
@@ -40,7 +40,9 @@ export function getPriceForCoin(address: Address): BigInt {
     return BI_18;
   }
   if (isBtc(address)) {
-    return getPriceForCoinWithSwapSync(WBTC_ZK, USDC_E_ZK, SWAP_SYNC_FACTORY)
+    const price = getPriceForCoinWithSwapSync(WBTC_ZK, WETH_ZK, SWAP_SYNC_FACTORY);
+    const wethPrice = getPriceForCoinWithSwapSync(WETH_ZK, USDC_ZK, SWAP_SYNC_FACTORY)
+    return toBigInt(price.times(wethPrice).divDecimal(BD_18));
   }
   if (isWeth(address)) {
     return getPriceForCoinWithSwapSync(WETH_ZK, USDC_ZK, SWAP_SYNC_FACTORY);

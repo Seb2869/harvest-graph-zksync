@@ -1,6 +1,11 @@
 specVersion: 0.0.8
 schema:
   file: ./schema.graphql
+#features:
+#  - grafting
+#graft:
+#  base: QmetdCQVspyYtJJ41X2qg3GM5WF35KprnMY9dprd1Qg2Q5
+#  block: 56176500
 dataSources:
   - kind: ethereum
     name: Controller
